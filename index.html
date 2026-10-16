@@ -65,9 +65,11 @@
     button {
       border: 0;
       border-radius: 8px;
-      padding: 11px 20px;
+      padding: 12px 24px;
       font-size: 1rem;
+      font-weight: 600;
       cursor: pointer;
+      min-width: 150px;
     }
 
     button:disabled {
@@ -80,12 +82,9 @@
       margin: 20px auto;
     }
 
-    #audio-frame {
+    #audio-player {
       width: 100%;
-      height: 120px;
-      border: 0;
-      border-radius: 10px;
-      background: #222;
+      height: 54px;
     }
 
     #audio-link {
@@ -121,12 +120,6 @@
 
   <div id="error"></div>
 
-  <img
-    id="page-image"
-    alt=""
-    style="display:none;"
-  >
-
   <div class="controls">
 
     <button id="prev">
@@ -139,24 +132,32 @@
 
   </div>
 
+  <img
+    id="page-image"
+    alt=""
+    style="display:none;"
+  >
+
   <div
     id="audio-container"
     style="display:none;"
   >
 
-    <iframe
-      id="audio-frame"
-      title="Âm thanh trang sách"
-      allow="autoplay"
-    ></iframe>
+    <audio
+      id="audio-player"
+      controls
+      preload="none"
+    ></audio>
 
-    <a
-      id="audio-link"
-      target="_blank"
-      rel="noopener"
-    >
-      Mở bản thu âm trên Vocaroo
-    </a>
+    <div>
+      <a
+        id="audio-link"
+        target="_blank"
+        rel="noopener"
+      >
+        Mở bản thu âm trên Vocaroo
+      </a>
+    </div>
 
   </div>
 
@@ -214,8 +215,8 @@ const nextEl =
 const audioContainerEl =
   document.getElementById("audio-container");
 
-const audioFrameEl =
-  document.getElementById("audio-frame");
+const audioPlayerEl =
+  document.getElementById("audio-player");
 
 const audioLinkEl =
   document.getElementById("audio-link");
@@ -364,25 +365,21 @@ function findNarration(narrationId) {
     return null;
   }
 
-
   if (
-    Array.isArray(
-      vocaroo.narrations
-    )
+    vocaroo.narrations &&
+    typeof vocaroo.narrations === "object"
   ) {
 
-    return vocaroo.narrations.find(
-      item =>
-        item.narration_id === narrationId
+    return (
+      vocaroo.narrations[narrationId] ||
+      null
     );
 
   }
 
-
   return null;
 
 }
-
 
 /* ============================================================
  * CLEAR AUDIO
@@ -394,15 +391,19 @@ function clearAudio() {
   audioContainerEl.style.display =
     "none";
 
-  audioFrameEl.src =
-    "about:blank";
+  audioPlayerEl.pause();
+
+  audioPlayerEl.removeAttribute(
+    "src"
+  );
+
+  audioPlayerEl.load();
 
   audioLinkEl.removeAttribute(
     "href"
   );
 
 }
-
 
 /* ============================================================
  * SHOW COVER
@@ -507,20 +508,26 @@ function showPage(index) {
     narration.embed_url
   ) {
 
-    const embedUrl =
-      getVocarooEmbedUrl(
-        narration.embed_url
+    const match =
+      narration.embed_url.match(
+        /^https?:\/\/voca\.ro\/([^/?#]+)/
       );
 
 
-    if (embedUrl) {
+    if (match) {
 
-      audioFrameEl.src =
-        embedUrl;
+      const audioId =
+        match[1];
+
+      const directAudioUrl =
+        "https://media.vocaroo.com/mp3/" +
+        audioId;
+
+      audioPlayerEl.src =
+        directAudioUrl;
 
       audioContainerEl.style.display =
         "block";
-
 
       audioLinkEl.href =
         narration.embed_url;
