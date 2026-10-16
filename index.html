@@ -103,12 +103,21 @@
     <button id="next">Trang sau →</button>
   </div>
 
-  <audio id="audio" controls style="display:none;"></audio>
+  <div id="audio-container" style="display:none;">
+    <iframe
+      id="audio-frame"
+      width="100%"
+      height="120"
+      frameborder="0"
+      allow="autoplay"
+      style="border:0; border-radius:10px;">
+    </iframe>
 
-  <div>
-    <a id="audio-link" target="_blank" rel="noopener" style="display:none;">
-      Mở bản thu âm
-    </a>
+    <div>
+      <a id="audio-link" target="_blank" rel="noopener">
+        Mở bản thu âm trên Vocaroo
+      </a>
+    </div>
   </div>
 </main>
 
@@ -123,7 +132,8 @@
   const titleEl = document.getElementById("book-title");
   const infoEl = document.getElementById("page-info");
   const imageEl = document.getElementById("page-image");
-  const audioEl = document.getElementById("audio");
+  const audioContainerEl = document.getElementById("audio-container");
+  const audioFrameEl = document.getElementById("audio-frame");
   const audioLinkEl = document.getElementById("audio-link");
   const loadingEl = document.getElementById("loading");
   const prevEl = document.getElementById("prev");
@@ -162,10 +172,8 @@
 
     infoEl.textContent = "Bìa sách";
 
-    audioEl.style.display = "none";
-    audioEl.removeAttribute("src");
-    audioEl.load();
-
+    audioContainerEl.style.display = "none";
+    audioFrameEl.removeAttribute("src");
     audioLinkEl.style.display = "none";
 
     prevEl.disabled = true;
@@ -193,13 +201,14 @@
       );
 
     if (narration && narration.embed_url) {
-      audioEl.src = narration.embed_url;
-      audioEl.style.display = "block";
+      audioFrameEl.src = narration.embed_url;
+      audioContainerEl.style.display = "block";
 
       audioLinkEl.href = narration.embed_url;
       audioLinkEl.style.display = "inline-block";
     } else {
-      audioEl.style.display = "none";
+      audioContainerEl.style.display = "none";
+      audioFrameEl.removeAttribute("src");
       audioLinkEl.style.display = "none";
     }
 
