@@ -1,0 +1,78 @@
+{
+  "smart_box": {
+    "name": "SBBox-Narration",
+    "version": "1.0.0",
+    "description": "Smart Box responsible for resolving and controlling narration associated with educational book pages."
+  },
+
+  "capability": {
+    "name": "Narration",
+    "contract": "contracts/narration.v1.json"
+  },
+
+  "inputs": {
+    "narration_id": {
+      "type": "string",
+      "required": true,
+      "description": "Stable identifier of the narration resource."
+    }
+  },
+
+  "outputs": {
+    "narration": {
+      "type": "narration",
+      "description": "Resolved narration resource associated with the stable narration identifier."
+    },
+    "narration_state": {
+      "type": "narration_state",
+      "description": "Current logical state of the narration."
+    }
+  },
+
+  "operations": [
+    "resolveNarration",
+    "playNarration",
+    "pauseNarration",
+    "stopNarration",
+    "getNarrationState"
+  ],
+
+  "owns": [
+    "Narration identity",
+    "Narration resolution",
+    "Narration playback state",
+    "Narration lifecycle"
+  ],
+
+  "does_not_own": [
+    "Narration provider",
+    "Provider-specific URL",
+    "Audio hosting",
+    "Browser APIs",
+    "HTML audio element",
+    "User interface",
+    "Page navigation",
+    "Book structure",
+    "Persistence technology"
+  ],
+
+  "dependencies": {
+    "requires_capabilities": [],
+    "uses_contracts": [
+      "contracts/narration.v1.json"
+    ],
+    "technology_dependencies": []
+  },
+
+  "rules": [
+    "Narration is identified by a stable narration identifier.",
+    "The narration identifier is independent of the narration provider.",
+    "SBBox-Narration does not expose provider-specific implementation details.",
+    "SBBox-Narration does not depend on a specific technology or provider.",
+    "Only SBBox-Narration controls narration playback state.",
+    "Narration resources are resolved through an adapter.",
+    "SBBox-Narration does not render audio.",
+    "SBBox-Narration does not control page navigation.",
+    "SBBox-Narration exposes WHAT narration operation is requested, not HOW playback is implemented."
+  ]
+}

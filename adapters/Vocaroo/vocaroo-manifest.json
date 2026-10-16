@@ -1,0 +1,36 @@
+{
+  "provider": "vocaroo",
+  "version": "1.0.0",
+  "narrations": {
+    "audio-01": {
+      "embed_url": "https://voca.ro/1mJrkAcnlyl3"
+    },
+    "audio-02": {
+      "embed_url": "https://voca.ro/1hH93s8yL0XT"
+    },
+    "audio-03": {
+      "embed_url": "https://voca.ro/16Clpm9RAiYC"
+    },
+    "audio-04": {
+      "embed_url": "https://voca.ro/1dOXpoECZoOu"
+    },
+    "audio-05": {
+      "embed_url": "https://voca.ro/1no9rooXwKt2"
+    },
+    "audio-06": {
+      "embed_url": "https://voca.ro/17iq0zm3G9C8"
+    },
+    "audio-07": {
+      "embed_url": "https://voca.ro/1alfCvHZwlIb"
+    },
+    "audio-08": {
+      "embed_url": "https://voca.ro/1mKwZUh0QT93"
+    },
+    "audio-09": {
+      "embed_url": "https://voca.ro/14tkZNWyieW3"
+    },
+    "audio-10": {
+      "embed_url": "https://voca.ro/130i2F0m87xI"
+    }
+  }
+}

@@ -1,0 +1,97 @@
+{
+  "contract": {
+    "name": "Narration",
+    "version": "1.0.0",
+    "description": "Contract for resolving and controlling narration associated with educational book pages."
+  },
+
+  "capability": {
+    "name": "Narration",
+    "responsibility": "Provide narration resolution and playback control through a stable narration identifier."
+  },
+
+  "entities": {
+    "narration": {
+      "narration_id": "string",
+      "resource": "string"
+    },
+
+    "narration_state": {
+      "status": "string"
+    }
+  },
+
+  "operations": {
+    "resolveNarration": {
+      "input": {
+        "narration_id": "string"
+      },
+      "output": {
+        "type": "narration"
+      }
+    },
+
+    "playNarration": {
+      "input": {
+        "narration_id": "string"
+      },
+      "output": {
+        "type": "narration_state"
+      }
+    },
+
+    "pauseNarration": {
+      "input": {
+        "narration_id": "string"
+      },
+      "output": {
+        "type": "narration_state"
+      }
+    },
+
+    "stopNarration": {
+      "input": {
+        "narration_id": "string"
+      },
+      "output": {
+        "type": "narration_state"
+      }
+    },
+
+    "getNarrationState": {
+      "input": {
+        "narration_id": "string"
+      },
+      "output": {
+        "type": "narration_state"
+      }
+    }
+  },
+
+  "rules": [
+    "Narration is identified by a stable narration identifier.",
+    "The narration identifier is independent of the narration provider.",
+    "Narration does not expose provider-specific implementation details.",
+    "Narration does not depend on a specific technology or provider.",
+    "Only the Narration capability controls narration playback state.",
+    "A narration resource may be resolved from a stable narration identifier.",
+    "The narration state must be reported through the Narration contract.",
+    "The Narration capability exposes WHAT narration operation is requested, not HOW playback is implemented."
+  ],
+
+  "states": [
+    "idle",
+    "playing",
+    "paused",
+    "stopped",
+    "error"
+  ],
+
+  "errors": {
+    "NARRATION_NOT_FOUND": "The requested narration identifier does not exist.",
+    "NARRATION_NOT_RESOLVED": "The narration resource could not be resolved.",
+    "PLAYBACK_ERROR": "The narration could not be played.",
+    "PAUSE_ERROR": "The narration could not be paused.",
+    "STOP_ERROR": "The narration could not be stopped."
+  }
+}

@@ -1,0 +1,64 @@
+{
+  "adapter": {
+    "name": "BookDataAdapter",
+    "version": "1.0.0",
+    "description": "Adapter interface for providing Book data to SBBox-BookCatalog."
+  },
+  "implements": {
+    "contract": "contracts/book-data-source.v1.json",
+    "capability": "BookDataSource"
+  },
+  "input": {
+    "book_id": {
+      "type": "string",
+      "required": true,
+      "description": "Stable identifier of the Book requested by SBBox-BookCatalog."
+    }
+  },
+  "output": {
+    "book": {
+      "type": "book",
+      "description": "Logical Book data conforming to the BookCatalog domain model."
+    }
+  },
+  "operations": [
+    "getBook"
+  ],
+  "owns": [
+    "Book data access",
+    "Book data resolution",
+    "Book data source integration",
+    "Technology-specific data access"
+  ],
+  "does_not_own": [
+    "BookCatalog business rules",
+    "Page navigation",
+    "Narration playback",
+    "Narration provider resolution",
+    "Image rendering",
+    "Reading session",
+    "User interface"
+  ],
+  "dependencies": {
+    "implements_contracts": [
+      "contracts/book-data-source.v1.json"
+    ],
+    "technology_dependencies": []
+  },
+  "rules": [
+    "The adapter must implement the BookDataSource contract.",
+    "The adapter receives a stable book identifier.",
+    "The adapter returns logical Book data.",
+    "The adapter must not modify BookCatalog business rules.",
+    "The adapter must not control page navigation.",
+    "The adapter must not control narration playback.",
+    "The adapter must not resolve narration provider resources.",
+    "The adapter must not render images.",
+    "Technology-specific implementation details must remain inside the adapter.",
+    "The adapter exposes WHAT Book data is available through the contract, while owning HOW that data is accessed."
+  ],
+  "errors": [
+    "BOOK_NOT_FOUND",
+    "BOOK_DATA_INVALID"
+  ]
+}

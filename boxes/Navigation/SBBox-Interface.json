@@ -1,0 +1,85 @@
+{
+  "smart_box": {
+    "name": "SBBox-Navigation",
+    "version": "1.0.0",
+    "description": "Smart Box responsible for controlling logical movement through the ordered pages of the educational book."
+  },
+
+  "capability": {
+    "name": "Navigation",
+    "contract": "contracts/navigation.v1.json"
+  },
+
+  "inputs": {
+    "page_id": {
+      "type": "string",
+      "required": false,
+      "description": "Stable identifier of a page used when directly navigating to a page."
+    }
+  },
+
+  "outputs": {
+    "navigation_state": {
+      "type": "navigation_state",
+      "description": "Current logical navigation state."
+    },
+    "can_go_next": {
+      "type": "boolean",
+      "description": "Whether navigation can move to the next page."
+    },
+    "can_go_previous": {
+      "type": "boolean",
+      "description": "Whether navigation can move to the previous page."
+    }
+  },
+
+  "operations": [
+    "getCurrentPage",
+    "goToPage",
+    "nextPage",
+    "previousPage",
+    "canGoNext",
+    "canGoPrevious"
+  ],
+
+  "owns": [
+    "Current page position",
+    "Logical page movement",
+    "Page boundary rules",
+    "Navigation state"
+  ],
+
+  "does_not_own": [
+    "Book structure",
+    "Page content",
+    "Image rendering",
+    "Image loading",
+    "Narration playback",
+    "Narration state",
+    "User interface",
+    "Browser APIs",
+    "Persistence technology"
+  ],
+
+  "dependencies": {
+    "requires_capabilities": [
+      "BookCatalog"
+    ],
+    "uses_contracts": [
+      "contracts/navigation.v1.json",
+      "contracts/book-catalog.v1.json"
+    ],
+    "technology_dependencies": []
+  },
+
+  "rules": [
+    "Navigation operates on the logical page order provided by BookCatalog.",
+    "The current page is identified by a stable page identifier.",
+    "Navigation must respect the first-page and last-page boundaries.",
+    "Navigation does not modify the logical structure of the book.",
+    "Navigation does not render or load page images.",
+    "Navigation does not control narration playback.",
+    "Navigation does not depend on a specific technology or provider.",
+    "Navigation exposes WHAT movement is requested, not HOW movement is implemented."
+  ]
+}

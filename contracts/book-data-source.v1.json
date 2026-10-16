@@ -1,0 +1,36 @@
+{
+  "contract": {
+    "name": "BookDataSource",
+    "version": "1.0.0",
+    "description": "Contract for providing logical Book data to SBBox-BookCatalog."
+  },
+  "capability": {
+    "name": "BookDataSource",
+    "responsibility": "Provide a Book identified by a stable book identifier."
+  },
+  "operations": {
+    "getBook": {
+      "input": {
+        "book_id": "string"
+      },
+      "output": {
+        "type": "book"
+      }
+    }
+  },
+  "rules": [
+    "The data source is identified by a stable book identifier.",
+    "The returned Book must conform to the logical Book model required by BookCatalog.",
+    "The data source does not control page navigation.",
+    "The data source does not control narration playback.",
+    "The data source does not render images.",
+    "The data source does not control reading sessions.",
+    "The data source may use any technology appropriate to its implementation.",
+    "Technology-specific details remain inside the adapter.",
+    "The adapter exposes WHAT Book data is available, not HOW the consuming Smart Box uses it."
+  ],
+  "errors": {
+    "BOOK_NOT_FOUND": "The requested book does not exist.",
+    "BOOK_DATA_INVALID": "The retrieved Book data is invalid."
+  }
+}

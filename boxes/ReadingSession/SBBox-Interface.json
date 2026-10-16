@@ -1,0 +1,84 @@
+{
+  "smart_box": {
+    "name": "SBBox-ReadingSession",
+    "version": "1.0.0",
+    "description": "Smart Box responsible for maintaining the logical state and progress of a reader's session through the educational book."
+  },
+
+  "capability": {
+    "name": "ReadingSession",
+    "contract": "contracts/reading-session.v1.json"
+  },
+
+  "inputs": {
+    "page_id": {
+      "type": "string",
+      "required": false,
+      "description": "Stable identifier of the current page."
+    }
+  },
+
+  "outputs": {
+    "reading_session": {
+      "type": "reading_session",
+      "description": "Current logical state and progress of the reading session."
+    }
+  },
+
+  "operations": [
+    "startSession",
+    "getSessionState",
+    "updateCurrentPage",
+    "trackProgress",
+    "endSession"
+  ],
+
+  "owns": [
+    "Reading session identity",
+    "Current reading page",
+    "Reading progress",
+    "Reading session status"
+  ],
+
+  "does_not_own": [
+    "Book structure",
+    "Page ordering",
+    "Page navigation rules",
+    "Image rendering",
+    "Image loading",
+    "Narration playback",
+    "Narration state",
+    "User interface",
+    "Browser APIs",
+    "Persistence technology"
+  ],
+
+  "dependencies": {
+    "requires_capabilities": [
+      "BookCatalog",
+      "Navigation"
+    ],
+    "uses_contracts": [
+      "contracts/reading-session.v1.json",
+      "contracts/book-catalog.v1.json",
+      "contracts/navigation.v1.json"
+    ],
+    "technology_dependencies": []
+  },
+
+  "rules": [
+    "ReadingSession maintains the logical state of the current reading session.",
+    "A reading session has a stable session identifier.",
+    "The current page is identified by a stable page identifier.",
+    "Reading progress is derived from the logical position within the book.",
+    "ReadingSession uses BookCatalog to understand the logical book structure.",
+    "ReadingSession uses Navigation to obtain the current logical page position.",
+    "ReadingSession does not own page ordering.",
+    "ReadingSession does not control page navigation.",
+    "ReadingSession does not control narration playback.",
+    "ReadingSession does not render or load page images.",
+    "ReadingSession does not depend on a specific storage technology.",
+    "ReadingSession does not depend on a specific technology or provider.",
+    "ReadingSession exposes WHAT reading state is maintained, not HOW that state is stored."
+  ]
+}

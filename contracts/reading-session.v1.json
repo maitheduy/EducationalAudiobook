@@ -1,0 +1,91 @@
+{
+  "contract": {
+    "name": "ReadingSession",
+    "version": "1.0.0",
+    "description": "Contract for managing the state and progress of a reader's session through the educational book."
+  },
+
+  "capability": {
+    "name": "ReadingSession",
+    "responsibility": "Maintain the logical state and progress of the current reading session."
+  },
+
+  "entities": {
+    "reading_session": {
+      "session_id": "string",
+      "current_page_id": "string",
+      "progress": {
+        "current_position": "integer",
+        "total_pages": "integer",
+        "percentage": "number"
+      },
+      "status": "string"
+    }
+  },
+
+  "operations": {
+    "startSession": {
+      "input": {},
+      "output": {
+        "type": "reading_session"
+      }
+    },
+
+    "getSessionState": {
+      "input": {},
+      "output": {
+        "type": "reading_session"
+      }
+    },
+
+    "updateCurrentPage": {
+      "input": {
+        "page_id": "string"
+      },
+      "output": {
+        "type": "reading_session"
+      }
+    },
+
+    "trackProgress": {
+      "input": {
+        "page_id": "string"
+      },
+      "output": {
+        "type": "reading_session"
+      }
+    },
+
+    "endSession": {
+      "input": {},
+      "output": {
+        "type": "reading_session"
+      }
+    }
+  },
+
+  "rules": [
+    "A reading session has a stable session identifier.",
+    "A reading session has at most one current page.",
+    "Reading progress is derived from the logical position within the book.",
+    "The current page must refer to a valid page.",
+    "ReadingSession maintains reading state but does not own book structure.",
+    "ReadingSession does not own page navigation rules.",
+    "ReadingSession does not control narration playback.",
+    "ReadingSession does not directly depend on storage technology.",
+    "ReadingSession does not depend on a specific technology or provider.",
+    "ReadingSession exposes WHAT reading state is maintained, not HOW that state is stored."
+  ],
+
+  "states": [
+    "active",
+    "ended"
+  ],
+
+  "errors": {
+    "SESSION_NOT_FOUND": "The requested reading session does not exist.",
+    "SESSION_NOT_ACTIVE": "The reading session is not active.",
+    "PAGE_NOT_FOUND": "The requested page identifier does not exist.",
+    "SESSION_NOT_INITIALIZED": "The reading session has not been initialized."
+  }
+}

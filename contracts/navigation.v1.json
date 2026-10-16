@@ -1,0 +1,84 @@
+{
+  "contract": {
+    "name": "Navigation",
+    "version": "1.0.0",
+    "description": "Contract for navigating through the ordered pages of the educational book."
+  },
+
+  "capability": {
+    "name": "Navigation",
+    "responsibility": "Control logical movement through the ordered pages of the book."
+  },
+
+  "entities": {
+    "navigation_state": {
+      "current_page_id": "string",
+      "position": "integer",
+      "total_pages": "integer"
+    }
+  },
+
+  "operations": {
+    "getCurrentPage": {
+      "input": {},
+      "output": {
+        "type": "navigation_state"
+      }
+    },
+
+    "goToPage": {
+      "input": {
+        "page_id": "string"
+      },
+      "output": {
+        "type": "navigation_state"
+      }
+    },
+
+    "nextPage": {
+      "input": {},
+      "output": {
+        "type": "navigation_state"
+      }
+    },
+
+    "previousPage": {
+      "input": {},
+      "output": {
+        "type": "navigation_state"
+      }
+    },
+
+    "canGoNext": {
+      "input": {},
+      "output": {
+        "type": "boolean"
+      }
+    },
+
+    "canGoPrevious": {
+      "input": {},
+      "output": {
+        "type": "boolean"
+      }
+    }
+  },
+
+  "rules": [
+    "Navigation operates on the logical order of pages.",
+    "The current page is identified by a stable page identifier.",
+    "The first page cannot move to a previous page.",
+    "The last page cannot move to a next page.",
+    "Navigation does not render pages.",
+    "Navigation does not load image resources.",
+    "Navigation does not control narration playback.",
+    "Navigation does not depend on a specific technology or provider.",
+    "Navigation exposes WHAT movement is requested, not HOW movement is implemented."
+  ],
+
+  "errors": {
+    "PAGE_NOT_FOUND": "The requested page identifier does not exist.",
+    "NAVIGATION_OUT_OF_BOUNDS": "The requested navigation operation exceeds the available page boundaries.",
+    "NAVIGATION_NOT_INITIALIZED": "Navigation has not been initialized with a valid book."
+  }
+}

@@ -1,0 +1,76 @@
+{
+  "smart_box": {
+    "name": "SBBox-BookCatalog",
+    "version": "1.0.0",
+    "description": "Smart Box responsible for exposing the logical structure and content references of the educational book."
+  },
+
+  "capability": {
+    "name": "BookCatalog",
+    "contract": "contracts/book-catalog.v1.json"
+  },
+
+  "inputs": {
+    "book_id": {
+      "type": "string",
+      "required": true,
+      "description": "Stable identifier of the book."
+    }
+  },
+
+  "outputs": {
+    "book": {
+      "type": "book",
+      "description": "Logical structure and content references of the book."
+    }
+  },
+
+  "operations": [
+    "loadBook",
+    "getBookMetadata",
+    "getCover",
+    "listPages",
+    "getPage",
+    "resolvePageNarration"
+  ],
+
+  "owns": [
+    "Book identity",
+    "Book metadata",
+    "Cover reference",
+    "Ordered page structure",
+    "Page identity",
+    "Page image reference",
+    "Page-to-narration relationship"
+  ],
+
+  "does_not_own": [
+    "Image rendering",
+    "Image loading technology",
+    "Narration playback",
+    "Narration provider",
+    "Browser APIs",
+    "User interface",
+    "Persistence technology"
+  ],
+
+  "dependencies": {
+    "requires_capabilities": [],
+    "uses_contracts": [
+      "contracts/book-catalog.v1.json"
+    ],
+    "technology_dependencies": []
+  },
+
+  "rules": [
+    "BookCatalog exposes the logical structure of the book.",
+    "BookCatalog uses stable identifiers for books, pages, and narrations.",
+    "Pages are exposed in logical reading order.",
+    "BookCatalog may expose a narration identifier associated with a page.",
+    "BookCatalog does not resolve provider-specific narration resources.",
+    "BookCatalog does not render or load images.",
+    "BookCatalog does not control narration playback.",
+    "BookCatalog does not depend on a specific technology or provider.",
+    "BookCatalog exposes WHAT is available, not HOW resources are implemented."
+  ]
+}

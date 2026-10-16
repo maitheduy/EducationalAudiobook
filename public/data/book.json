@@ -1,0 +1,69 @@
+{
+  "book_id": "educational-audiobook-001",
+  "title": "Sách giáo khoa và Bộ truyền dẫn kiến thức",
+  "cover": {
+    "image": "cover.png"
+  },
+  "pages": [
+    {
+      "page_id": "page-01",
+      "order": 1,
+      "image": "page-01.png",
+      "narration_id": "audio-01"
+    },
+    {
+      "page_id": "page-02",
+      "order": 2,
+      "image": "page-02.png",
+      "narration_id": "audio-02"
+    },
+    {
+      "page_id": "page-03",
+      "order": 3,
+      "image": "page-03.png",
+      "narration_id": "audio-03"
+    },
+    {
+      "page_id": "page-04",
+      "order": 4,
+      "image": "page-04.png",
+      "narration_id": "audio-04"
+    },
+    {
+      "page_id": "page-05",
+      "order": 5,
+      "image": "page-05.png",
+      "narration_id": "audio-05"
+    },
+    {
+      "page_id": "page-06",
+      "order": 6,
+      "image": "page-06.png",
+      "narration_id": "audio-06"
+    },
+    {
+      "page_id": "page-07",
+      "order": 7,
+      "image": "page-07.png",
+      "narration_id": "audio-07"
+    },
+    {
+      "page_id": "page-08",
+      "order": 8,
+      "image": "page-08.png",
+      "narration_id": "audio-08"
+    },
+    {
+      "page_id": "page-09",
+      "order": 9,
+      "image": "page-09.png",
+      "narration_id": "audio-09"
+    },
+    {
+      "page_id": "page-10",
+      "order": 10,
+      "image": "page-10.png",
+      "narration_id": "audio-10"
+    }
+  ]
+}

@@ -1,0 +1,99 @@
+{
+  "contract": {
+    "name": "BookCatalog",
+    "version": "1.0.0",
+    "description": "Contract for accessing the logical structure of the educational book."
+  },
+
+  "capability": {
+    "name": "BookCatalog",
+    "responsibility": "Provide the logical structure and content references of the book."
+  },
+
+  "entities": {
+    "book": {
+      "book_id": "string",
+      "title": "string",
+      "cover": {
+        "image": "string"
+      },
+      "pages": [
+        {
+          "page_id": "string",
+          "order": "integer",
+          "image": "string",
+          "narration_id": "string"
+        }
+      ]
+    }
+  },
+
+  "operations": {
+    "loadBook": {
+      "input": {},
+      "output": {
+        "type": "book"
+      }
+    },
+
+    "getBookMetadata": {
+      "input": {},
+      "output": {
+        "type": "object"
+      }
+    },
+
+    "getCover": {
+      "input": {},
+      "output": {
+        "type": "object",
+        "fields": [
+          "image"
+        ]
+      }
+    },
+
+    "listPages": {
+      "input": {},
+      "output": {
+        "type": "array",
+        "item_type": "page"
+      }
+    },
+
+    "getPage": {
+      "input": {
+        "page_id": "string"
+      },
+      "output": {
+        "type": "page"
+      }
+    },
+
+    "resolvePageNarration": {
+      "input": {
+        "page_id": "string"
+      },
+      "output": {
+        "type": "string",
+        "description": "Stable narration identifier associated with the page."
+      }
+    }
+  },
+
+  "rules": [
+    "BookCatalog owns the logical structure of the book.",
+    "Pages are returned in logical reading order.",
+    "Each interior page may reference one narration identifier.",
+    "The cover does not require a narration identifier.",
+    "Narration provider information is not owned by BookCatalog.",
+    "BookCatalog does not depend on a specific technology or provider.",
+    "BookCatalog exposes WHAT is available, not HOW resources are implemented."
+  ],
+
+  "errors": {
+    "BOOK_NOT_FOUND": "The requested book does not exist.",
+    "PAGE_NOT_FOUND": "The requested page does not exist.",
+    "NARRATION_NOT_ASSIGNED": "The requested page has no narration identifier."
+  }
+}
