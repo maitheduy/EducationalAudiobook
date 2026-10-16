@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
   <title>Sách giáo khoa và Bộ truyền dẫn kiến thức</title>
 
   <style>
@@ -12,9 +13,14 @@
 
     body {
       margin: 0;
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
       background: #111;
       color: #fff;
+      font-family:
+        system-ui,
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        sans-serif;
       text-align: center;
     }
 
@@ -33,9 +39,9 @@
     }
 
     main {
-      max-width: 900px;
+      width: min(900px, 100%);
       margin: auto;
-      padding: 10px 16px 30px;
+      padding: 10px 16px 40px;
     }
 
     #page-image {
@@ -44,44 +50,58 @@
       height: auto;
       margin: 10px auto 20px;
       border-radius: 10px;
-      box-shadow: 0 4px 25px rgba(0,0,0,.5);
+      box-shadow: 0 4px 25px rgba(0, 0, 0, 0.5);
     }
 
     .controls {
       display: flex;
       justify-content: center;
-      gap: 10px;
+      align-items: center;
+      gap: 12px;
       flex-wrap: wrap;
-      margin: 15px 0;
+      margin: 18px 0;
     }
 
     button {
       border: 0;
       border-radius: 8px;
-      padding: 10px 18px;
+      padding: 11px 20px;
       font-size: 1rem;
       cursor: pointer;
     }
 
     button:disabled {
-      opacity: .35;
+      opacity: 0.35;
       cursor: not-allowed;
     }
 
-    #audio {
-      width: min(100%, 700px);
-      margin: 10px auto;
+    #audio-container {
+      width: min(700px, 100%);
+      margin: 20px auto;
+    }
+
+    #audio-frame {
+      width: 100%;
+      height: 120px;
+      border: 0;
+      border-radius: 10px;
+      background: #222;
     }
 
     #audio-link {
       display: inline-block;
-      margin-top: 8px;
+      margin-top: 10px;
       color: #8ecaff;
     }
 
     #loading {
       padding: 40px;
-      opacity: .7;
+      opacity: 0.7;
+    }
+
+    #error {
+      color: #ff8a8a;
+      margin: 20px;
     }
   </style>
 </head>
@@ -94,158 +114,556 @@
 </header>
 
 <main>
-  <div id="loading">Đang tải nội dung...</div>
 
-  <img id="page-image" alt="" style="display:none;">
+  <div id="loading">
+    Đang tải nội dung...
+  </div>
+
+  <div id="error"></div>
+
+  <img
+    id="page-image"
+    alt=""
+    style="display:none;"
+  >
 
   <div class="controls">
-    <button id="prev">← Trang trước</button>
-    <button id="next">Trang sau →</button>
+
+    <button id="prev">
+      ← Trang trước
+    </button>
+
+    <button id="next">
+      Trang sau →
+    </button>
+
   </div>
 
-  <div id="audio-container" style="display:none;">
+  <div
+    id="audio-container"
+    style="display:none;"
+  >
+
     <iframe
       id="audio-frame"
-      width="100%"
-      height="120"
-      frameborder="0"
+      title="Âm thanh trang sách"
       allow="autoplay"
-      style="border:0; border-radius:10px;">
-    </iframe>
+    ></iframe>
 
-    <div>
-      <a id="audio-link" target="_blank" rel="noopener">
-        Mở bản thu âm trên Vocaroo
-      </a>
-    </div>
+    <a
+      id="audio-link"
+      target="_blank"
+      rel="noopener"
+    >
+      Mở bản thu âm trên Vocaroo
+    </a>
+
   </div>
+
 </main>
 
 <script>
-  const BOOK_URL = "public/data/book.json";
-  const VOCAROO_URL = "adapters/Vocaroo/vocaroo-manifest.json";
 
-  let book = null;
-  let vocaroo = null;
-  let currentPage = -1;
+const BOOK_URL =
+  "public/data/book.json";
 
-  const titleEl = document.getElementById("book-title");
-  const infoEl = document.getElementById("page-info");
-  const imageEl = document.getElementById("page-image");
-  const audioContainerEl = document.getElementById("audio-container");
-  const audioFrameEl = document.getElementById("audio-frame");
-  const audioLinkEl = document.getElementById("audio-link");
-  const loadingEl = document.getElementById("loading");
-  const prevEl = document.getElementById("prev");
-  const nextEl = document.getElementById("next");
+const VOCAROO_URL =
+  "adapters/Vocaroo/vocaroo-manifest.json";
 
-  async function loadBook() {
-    const [bookResponse, vocarooResponse] = await Promise.all([
+let book = null;
+let vocaroo = null;
+
+/*
+ * currentPage:
+ *
+ * -1 = cover
+ *  0 = page-01
+ *  1 = page-02
+ * ...
+ */
+
+let currentPage = -1;
+
+
+/* ============================================================
+ * DOM
+ * ============================================================
+ */
+
+const titleEl =
+  document.getElementById("book-title");
+
+const infoEl =
+  document.getElementById("page-info");
+
+const imageEl =
+  document.getElementById("page-image");
+
+const loadingEl =
+  document.getElementById("loading");
+
+const errorEl =
+  document.getElementById("error");
+
+const prevEl =
+  document.getElementById("prev");
+
+const nextEl =
+  document.getElementById("next");
+
+const audioContainerEl =
+  document.getElementById("audio-container");
+
+const audioFrameEl =
+  document.getElementById("audio-frame");
+
+const audioLinkEl =
+  document.getElementById("audio-link");
+
+
+/* ============================================================
+ * LOAD
+ * ============================================================
+ */
+
+async function loadBook() {
+
+  try {
+
+    const [
+      bookResponse,
+      vocarooResponse
+    ] = await Promise.all([
+
       fetch(BOOK_URL),
+
       fetch(VOCAROO_URL)
+
     ]);
 
+
     if (!bookResponse.ok) {
-      throw new Error("Không thể tải Book Data.");
-    }
 
-    if (!vocarooResponse.ok) {
-      throw new Error("Không thể tải Vocaroo manifest.");
-    }
-
-    book = await bookResponse.json();
-    vocaroo = await vocarooResponse.json();
-
-    titleEl.textContent = book.title;
-
-    loadingEl.style.display = "none";
-
-    showCover();
-  }
-
-  function showCover() {
-    currentPage = -1;
-
-    imageEl.src = "public/images/" + book.cover.image;
-    imageEl.alt = book.title;
-    imageEl.style.display = "block";
-
-    infoEl.textContent = "Bìa sách";
-
-    audioContainerEl.style.display = "none";
-    audioFrameEl.removeAttribute("src");
-    audioLinkEl.style.display = "none";
-
-    prevEl.disabled = true;
-    nextEl.disabled = book.pages.length === 0;
-  }
-
-  function showPage(index) {
-    if (index < 0 || index >= book.pages.length) {
-      return;
-    }
-
-    currentPage = index;
-
-    const page = book.pages[index];
-
-    imageEl.src = "public/images/" + page.image;
-    imageEl.alt = `Trang ${index + 1}`;
-
-    infoEl.textContent =
-      `Trang ${index + 1} / ${book.pages.length}`;
-
-    const narration =
-      vocaroo.narrations?.find(
-        item => item.narration_id === page.narration_id
+      throw new Error(
+        "Không thể tải Book Data."
       );
 
-    if (narration && narration.embed_url) {
-      audioFrameEl.src = narration.embed_url;
-      audioContainerEl.style.display = "block";
-
-      audioLinkEl.href = narration.embed_url;
-      audioLinkEl.style.display = "inline-block";
-    } else {
-      audioContainerEl.style.display = "none";
-      audioFrameEl.removeAttribute("src");
-      audioLinkEl.style.display = "none";
     }
 
-    prevEl.disabled = false;
-    nextEl.disabled = index >= book.pages.length - 1;
 
-    window.scrollTo({
-      top: 0,
-      behavior: "smooth"
-    });
+    if (!vocarooResponse.ok) {
+
+      throw new Error(
+        "Không thể tải Vocaroo manifest."
+      );
+
+    }
+
+
+    book =
+      await bookResponse.json();
+
+    vocaroo =
+      await vocarooResponse.json();
+
+
+    titleEl.textContent =
+      book.title;
+
+
+    loadingEl.style.display =
+      "none";
+
+
+    showCover();
+
   }
 
-  prevEl.addEventListener("click", () => {
-    if (currentPage === -1) {
-      return;
+  catch (error) {
+
+    loadingEl.style.display =
+      "none";
+
+    errorEl.textContent =
+      "Không thể tải sách: " +
+      error.message;
+
+    console.error(error);
+
+  }
+
+}
+
+
+/* ============================================================
+ * VOCAROO URL
+ * ============================================================
+ */
+
+function getVocarooEmbedUrl(url) {
+
+  if (!url) {
+    return null;
+  }
+
+
+  /*
+   * Voca.ro short URL:
+   *
+   * https://voca.ro/XXXXXXXX
+   *
+   * → Vocaroo embed:
+   *
+   * https://vocaroo.com/embed/XXXXXXXX
+   */
+
+  const match =
+    url.match(
+      /^https?:\/\/voca\.ro\/([^/?#]+)/
+    );
+
+
+  if (match) {
+
+    return (
+      "https://vocaroo.com/embed/" +
+      match[1]
+    );
+
+  }
+
+
+  /*
+   * Already an embed URL.
+   */
+
+  if (
+    url.includes(
+      "vocaroo.com/embed/"
+    )
+  ) {
+
+    return url;
+
+  }
+
+
+  return url;
+
+}
+
+
+/* ============================================================
+ * FIND NARRATION
+ * ============================================================
+ */
+
+function findNarration(narrationId) {
+
+  if (!vocaroo) {
+    return null;
+  }
+
+
+  if (
+    Array.isArray(
+      vocaroo.narrations
+    )
+  ) {
+
+    return vocaroo.narrations.find(
+      item =>
+        item.narration_id === narrationId
+    );
+
+  }
+
+
+  return null;
+
+}
+
+
+/* ============================================================
+ * CLEAR AUDIO
+ * ============================================================
+ */
+
+function clearAudio() {
+
+  audioContainerEl.style.display =
+    "none";
+
+  audioFrameEl.src =
+    "about:blank";
+
+  audioLinkEl.removeAttribute(
+    "href"
+  );
+
+}
+
+
+/* ============================================================
+ * SHOW COVER
+ * ============================================================
+ */
+
+function showCover() {
+
+  currentPage = -1;
+
+
+  imageEl.src =
+    "public/images/" +
+    book.cover.image;
+
+  imageEl.alt =
+    book.title;
+
+  imageEl.style.display =
+    "block";
+
+
+  infoEl.textContent =
+    "Bìa sách";
+
+
+  clearAudio();
+
+
+  updateButtons();
+
+
+  window.scrollTo({
+    top: 0,
+    behavior: "smooth"
+  });
+
+}
+
+
+/* ============================================================
+ * SHOW PAGE
+ * ============================================================
+ */
+
+function showPage(index) {
+
+  if (
+    !book ||
+    !Array.isArray(book.pages)
+  ) {
+
+    return;
+
+  }
+
+
+  if (
+    index < 0 ||
+    index >= book.pages.length
+  ) {
+
+    return;
+
+  }
+
+
+  currentPage = index;
+
+
+  const page =
+    book.pages[index];
+
+
+  imageEl.src =
+    "public/images/" +
+    page.image;
+
+  imageEl.alt =
+    "Trang " +
+    (index + 1);
+
+
+  infoEl.textContent =
+    "Trang " +
+    (index + 1) +
+    " / " +
+    book.pages.length;
+
+
+  clearAudio();
+
+
+  const narration =
+    findNarration(
+      page.narration_id
+    );
+
+
+  if (
+    narration &&
+    narration.embed_url
+  ) {
+
+    const embedUrl =
+      getVocarooEmbedUrl(
+        narration.embed_url
+      );
+
+
+    if (embedUrl) {
+
+      audioFrameEl.src =
+        embedUrl;
+
+      audioContainerEl.style.display =
+        "block";
+
+
+      audioLinkEl.href =
+        narration.embed_url;
+
     }
+
+  }
+
+
+  updateButtons();
+
+
+  window.scrollTo({
+    top: 0,
+    behavior: "smooth"
+  });
+
+}
+
+
+/* ============================================================
+ * BUTTON STATE
+ * ============================================================
+ */
+
+function updateButtons() {
+
+  /*
+   * Cover:
+   *
+   * Previous disabled
+   * Next enabled
+   */
+
+  if (currentPage === -1) {
+
+    prevEl.disabled =
+      true;
+
+    nextEl.disabled =
+      book.pages.length === 0;
+
+    return;
+
+  }
+
+
+  /*
+   * First page:
+   *
+   * Previous goes back to cover.
+   */
+
+  prevEl.disabled =
+    false;
+
+
+  /*
+   * Last page:
+   *
+   * Next disabled.
+   */
+
+  nextEl.disabled =
+    currentPage >=
+    book.pages.length - 1;
+
+}
+
+
+/* ============================================================
+ * PREVIOUS
+ * ============================================================
+ */
+
+prevEl.addEventListener(
+  "click",
+  function () {
+
+    if (currentPage === -1) {
+
+      return;
+
+    }
+
 
     if (currentPage === 0) {
+
       showCover();
-    } else {
-      showPage(currentPage - 1);
-    }
-  });
 
-  nextEl.addEventListener("click", () => {
+      return;
+
+    }
+
+
+    showPage(
+      currentPage - 1
+    );
+
+  }
+);
+
+
+/* ============================================================
+ * NEXT
+ * ============================================================
+ */
+
+nextEl.addEventListener(
+  "click",
+  function () {
+
     if (currentPage === -1) {
-      showPage(0);
-    } else if (currentPage < book.pages.length - 1) {
-      showPage(currentPage + 1);
-    }
-  });
 
-  loadBook().catch(error => {
-    loadingEl.textContent =
-      "Không thể tải sách: " + error.message;
-    console.error(error);
-  });
+      showPage(0);
+
+      return;
+
+    }
+
+
+    if (
+      currentPage <
+      book.pages.length - 1
+    ) {
+
+      showPage(
+        currentPage + 1
+      );
+
+    }
+
+  }
+);
+
+
+/* ============================================================
+ * START
+ * ============================================================
+ */
+
+loadBook();
+
 </script>
 
 </body>
